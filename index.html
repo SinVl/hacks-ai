@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>hackathon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.css">
+</head>
+
+<body>
+    <div class="container" style="margin-top: 200px;">
+        <div class="card" data-aos="fade-up" data-aos-duration="2000" data-aos-once="true">
+            <div class="card-body border rounded shadow">
+                <h3 class="text-center card-title">Определение категории и подкатегории продукта ЕП РФ по наименованию</h3>
+                <hr>
+                <div class="row">
+                    <div class="col-xl-6 offset-xl-3 d-xl-flex flex-column justify-content-xl-center align-items-xl-center">
+                        <p class="text-center" style="margin-bottom: 5px;font-size: 20px;">Введите название продукта:</p><input class="border rounded border-primary shadow-sm form-control-lg" type="text" id="product_name"></div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-6 offset-xl-3 d-xl-flex flex-column justify-content-xl-center align-items-xl-center">
+                        <p class="text-center" style="margin-bottom: 5px;font-size: 20px;">Определённая категория:</p>
+                        <h3 id="cat1">-</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-6 offset-xl-3 d-xl-flex flex-column justify-content-xl-center align-items-xl-center">
+                        <p class="text-center" style="margin-bottom: 5px;font-size: 20px;">Определённая подкатегория:</p>
+                        <h3 id="cat2">-</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-2"><a class="btn btn-outline-primary" role="button" style="margin-top: 30px;" href="index3">Валидация массива</a></div>
+                    <div class="col-xl-8 offset-xl-0">
+                        <hr>
+                        <h2 class="text-center" id="sum" style="margin-top: 8px;">-</h2>
+                    </div>
+                    <div class="col-xl-2"><a class="btn btn-outline-primary" role="button" style="margin-top: 30px;" href="/index2">Валидность записи</a></div>
+                </div>
+            </div>
+        </div>
+    </div><script>
+    var product_name = document.getElementById('product_name'),
+        cat1 = document.getElementById('cat1'),
+        cat2 = document.getElementById('cat2'),
+        sum = document.getElementById('sum');
+    var d = new Date();
+    var last_time = d.getTime();;
+    var last_ph = '';
+    async function product_name_fetch(){
+        if (product_name.value.trim().length < 1){
+            cat1.innerText = '-';
+            cat2.innerText = '-';
+            sum.innerText = '-';
+            return
+        }
+        var d = new Date();
+        console.log(d.getTime() - last_time > 2000);
+        if (d.getTime() - last_time > 2000 && product_name.value != last_ph){
+            console.log(2);
+            last_name = d.getTime();
+            last_ph = product_name.value;
+            let response = await (await fetch('/predict_category/'+last_ph)).json();
+            console.log(response);
+            cat1.innerText = response['predict_1'];
+            cat2.innerText = response['predict_2'];
+            sum.innerText = "Итоговый код ЕП РФ: " + response['ep_code'];
+        }
+    }
+    product_name.oninput = product_name_fetch;
+</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.1.1/aos.js"></script>
+    <script src="assets/js/script.min.js"></script>
+</body>
+
+</html>
