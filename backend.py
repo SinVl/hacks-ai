@@ -74,7 +74,6 @@ async def create_file(files: UploadFile = File(...)):
         
         df['ep_code'] = df['ep_code'].astype(str)
         data = []
-        df=df[:200]
         for i, row in df.iterrows():
             ep_code, subcat = predict(row['product_name'])
             data.append(ep_code==row['ep_code'])
